@@ -2,9 +2,9 @@ use std::fs;
 
 fn main() {
     println!("Hello, world!");
-    let input = read_input("./example_input.txt");
+    let input = read_input("./input.txt");
 
-    let mut sum = part_one(&input);
+    let sum = part_one(&input);
     println!("Part One Sum: {sum}");
 
     // sum = part_two(&input);
@@ -17,40 +17,44 @@ fn read_input(file_path: &str) -> String {
     input
 }
 
-fn parse_input(input: &String) -> Vec<i32> {
-    let mut invalid_ids: Vec<i32> = vec![];
-    for rng:Vec<&str> in input.split(',').collect() {
+fn parse_input(input: &str) -> Vec<i64> {
+    let mut invalid_ids: Vec<i64> = vec![];
+     
+    for rng in input.split(',') {
         let parts:Vec<&str> = rng.split('-').collect();
-        let start = parts[0].parse::<i32>();
-        let end = parts[1].parse::<i32>();
+        println!("Range 0: {}\t1: {}", parts[0], parts[1]);
+        let start = parts[0].parse::<i64>().expect("invalid start number");
+        let end = parts[1].parse::<i64>().expect("invalid end number");
+        println!("Range: {} - {}", start, end);
         for curr in start..=end {
-            let str_curr = curr.to_string();
+            let string_curr: String = curr.to_string();
+            let str_curr:&str = &string_curr.as_str();
             let l = str_curr.len();
             if l % 2 != 0 {
                 continue;
             }      
-            let front_val = str_curr[0..l/2];
-            let end_val = str_curr[l/2..];
+            let front_val = &str_curr[0..l/2];
+            let end_val = &str_curr[l/2..];
             if front_val == end_val {
                 invalid_ids.push(curr);
+                print!("\t{}", curr)
             }
         }
-        
+        println!("")
     }
-    invalid_ids;
+    invalid_ids
 }
 
-fn sum_ids(ids: Vec<i32>) -> i32 {
+fn sum_ids(ids: Vec<i64>) -> i64 {
     let mut sum = 0;
     for id in ids {
         sum += id;
     }
-    sum;
+    sum
 }
 
-fn part_one(input: &String ) -> i32 {
-    let invalid_ids = vec![];
+fn part_one(input: &str ) -> i64 {
     let invalid_ids = parse_input(input);
     let sum_one = sum_ids(invalid_ids);
-    sum_one;
+    sum_one
 }
