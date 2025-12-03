@@ -1,0 +1,13 @@
+# Compiled files
+**/target/
+
+# Backup files from rustfmt or editors
+**/*.rs.bk
+
+# IDEs
+.vscode/
+.idea/
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
