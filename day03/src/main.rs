@@ -1,7 +1,7 @@
 use std::fs;
 
 fn main() {
-    let input = read_input("./example_input.txt");
+    let input = read_input("./input.txt");
 
     let mut sum = part_one(&input);
     println!("Part One Sum: {sum}");
@@ -39,6 +39,26 @@ fn part_one(input: &str) -> i64 {
 }
 
 fn part_two(input: &str) -> i64 {
-    println!("{}", input);
-    0
+    let mut sum: i64 = 0;
+    let num_batteries = 12;
+    for curr in input.lines() {
+        let mut value:Vec<char> = vec![];
+        let len = curr.len();
+        let mut drops_left = len - num_batteries;
+        for ch in curr.chars() {
+            while let Some(&last) = value.last() {
+                if drops_left > 0 && last < ch {
+                    value.pop();
+                    drops_left -= 1;
+                } else {
+                    break;
+                }
+            }
+            value.push(ch);
+        }
+        let strval: String = value.iter().take(num_batteries).collect();
+        let ival = strval.parse::<i64>().expect("unable to parse final number");
+        sum += ival;
+    }
+    sum
 }

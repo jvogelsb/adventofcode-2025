@@ -18,7 +18,7 @@ fn read_input(file_path: &str) -> (String, String) {
     return (temp[0].to_string(), temp[1].to_string());
 }
 
-#[derive(Debug,Clone)]
+#[derive(Debug,Clone,Copy)]
 struct Range {
     start: u64,
     end: u64,
@@ -26,12 +26,12 @@ struct Range {
 
 impl Range {
 
-    fn overlaps(&self, other:Range) -> bool {
+    fn overlaps(&self, other:&Range) -> bool {
         return self.start <= other.start && self.end >= other.start ||
         self.start <= other.end && self.end >= other.end
     }
 
-    fn merge(&mut self, other:Range) {
+    fn merge(&mut self, other:&Range) {
         if other.start < self.start {
             self.start = other.start;
         }
@@ -80,10 +80,11 @@ fn part_two(ranges: &String) -> u64 {
     let mut next = iranges.get(1).unwrap();
     let mut cur = iranges.get(0).unwrap();
     for i in 0..iranges.len() - 1 {
-        if next.overlaps(cur.clone()) {
-            next.merge(cur.clone());
+        let cc = cur;
+        if next.overlaps(cc) {
+            next.merge(cc);
         } else {
-            final_ranges.push(cur);
+            final_ranges.push(cc);
             cur = next;
             next = iranges.get(i+1).unwrap();
         }
