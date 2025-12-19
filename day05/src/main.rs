@@ -1,12 +1,12 @@
 use std::fs;
 
 fn main() {
-    let input = read_input("./example_input.txt");
+    let input = read_input("./input.txt");
 
-    let pass = part_one(&input.0, &input.1);
+    let pass = part_one(&input.0.as_str(), &input.1.as_str());
     println!("Part One Password: {pass}");
 
-    let sum  = part_two(&input.0);
+    let sum  = part_two(&input.0.as_str());
     println!("Part Two Sum: {sum}");
 }
 
@@ -25,7 +25,6 @@ struct Range {
 }
 
 impl Range {
-
     fn overlaps(&self, other:&Range) -> bool {
         return self.start <= other.start && self.end >= other.start ||
         self.start <= other.end && self.end >= other.end
@@ -41,7 +40,7 @@ impl Range {
     }
 }
 
-fn part_one(ranges: &String, ingredients: &String) -> i64 {
+fn part_one(ranges: &str, ingredients: &str) -> i64 {
     let mut iranges: Vec<Range> = Vec::new();
 
     let mut num_fresh =0;
@@ -62,7 +61,7 @@ fn part_one(ranges: &String, ingredients: &String) -> i64 {
     num_fresh
 }
 
-fn part_two(ranges: &String) -> u64 {
+fn part_two(ranges: &str) -> u64 {
     let mut iranges: Vec<Range> = Vec::new();
 
     for line in ranges.lines() {
@@ -77,19 +76,16 @@ fn part_two(ranges: &String) -> u64 {
     });
 
     let mut final_ranges: Vec<Range> = Vec::new();
-    let mut next = iranges.get(1).unwrap();
-    let mut cur = iranges.get(0).unwrap();
-    for i in 0..iranges.len() - 1 {
-        let cc = cur;
-        if next.overlaps(cc) {
-            next.merge(cc);
+    for i in 0..iranges.len() -1 {  // next: Range (copied)
+        let cur = iranges[i];
+        let next = &mut iranges[i+1];
+        if cur.overlaps(&next) {
+            next.merge(&cur);
         } else {
-            final_ranges.push(cc);
-            cur = next;
-            next = iranges.get(i+1).unwrap();
+            final_ranges.push(cur);
         }
-    };
-    
+    }
+    final_ranges.push(*iranges.last().unwrap());
     let mut sum = 0;
     for rng in final_ranges {
         sum += rng.end - rng.start + 1;
